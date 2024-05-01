@@ -1,0 +1,3 @@
+# !bin/bush
+
+./build/main
