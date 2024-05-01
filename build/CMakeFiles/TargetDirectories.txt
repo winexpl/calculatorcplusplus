@@ -1,0 +1,3 @@
+/home/masha/Рабочий стол/calculator/build/CMakeFiles/main.dir
+/home/masha/Рабочий стол/calculator/build/CMakeFiles/edit_cache.dir
+/home/masha/Рабочий стол/calculator/build/CMakeFiles/rebuild_cache.dir
