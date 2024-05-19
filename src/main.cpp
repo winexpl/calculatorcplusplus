@@ -1,16 +1,17 @@
 #include <cstdio>
 #include <iostream>
 #include <cstring>
+#include <math.h>
 
 using namespace std;
 
 struct TreeNode {
     TreeNode() = default;
-    TreeNode(int value) : value { value } { };
-    void set_value(int value) {
+    TreeNode(double value) : value { value } { };
+    void set_value(double value) {
         this->value = value;
     }
-    int get_value() {
+    double get_value() {
         return value;
     }
     TreeNode* get_left() {
@@ -26,13 +27,43 @@ struct TreeNode {
         this->right = right;
     }
     private:
-        int value{};
+        double value{};
         TreeNode *left{nullptr};
         TreeNode *right{nullptr};
 };
 
 struct Tree {
     Tree() = default;
+
+    template <size_t len>
+    Tree(double (&values)[len]) {
+        if(len == 0 || isnan(values[0])) return;
+        int h = log(len)/log(2); // length of tree
+        TreeNode **nodes = new TreeNode*[len] {}; // array for save all elements of our tree 
+        this->head = new TreeNode{values[0]}; // the first element is the head
+        nodes[0] = this->head; // save head in array
+        int i_parent = 0; // 
+        int i_cur = 1;
+        for(size_t i = 2; i < h+1; i++) {
+            int len_level = pow(2,i+2);
+            for(; i_cur < len_level-1; i_cur++, i_parent++) {
+                if(i_cur==len) return;
+                // set left
+                nodes[i_cur] = isnan(values[i_cur])? nullptr: new TreeNode{values[i_cur]};
+                if(nodes[i_parent]) {
+                    nodes[i_parent]->set_left(nodes[i_cur]);
+                    i_cur++; 
+                    if(i_cur==len) return;
+                    //set right
+                    nodes[i_cur] = isnan(values[i_cur])? nullptr: new TreeNode{values[i_cur]};
+                    nodes[i_parent]->set_right(nodes[i_cur]);
+
+                } else i_cur++;
+                
+            }
+            i_parent=len_level-1;
+        }
+    }
     Tree(TreeNode *head) : head{ head } { } 
     TreeNode *get_head() {
         return head;
@@ -41,7 +72,7 @@ struct Tree {
         int weight{};
         TreeNode *templ = head;
         TreeNode *tempr = head;
-        while(templ != nullptr & tempr != nullptr) {
+        while(templ != nullptr || tempr != nullptr) {
             if (templ) templ = templ->get_left();
             if (tempr) tempr = tempr->get_right();
             weight++;
@@ -91,22 +122,10 @@ struct Tree {
 
 int main() {
     cout << "hi!" << endl;
-    TreeNode node1{1};
-    TreeNode node10{2};
-    TreeNode node11{3};
-    TreeNode node101{4};
-    TreeNode node110{5};
-    TreeNode node111{6};
-    TreeNode node1110{7};
-    node1.set_left(&node10);
-    node1.set_right(&node11);
-    node10.set_right(&node101);
-    node11.set_left(&node110);
-    node11.set_right(&node111);
-    node111.set_left(&node1110);
-    Tree tree{&node1};
-    tree.output_tree(10);
 
+    double arr[]{1,2,NAN,4,5,6,7,8,9,10,11,12,13,14,15,16,17};
+    Tree tree{arr};
+    tree.output_tree(20);
 }
 
 string to_polish(string not_polish) {
